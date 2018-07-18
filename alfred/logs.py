@@ -44,6 +44,13 @@ def debug(msg):
         blue=color(colorama.Fore.BLUE),
         bold=color(colorama.Style.BRIGHT)))
 
+def error(msg):
+    sys.stderr.write(u'{red}{bold}ERROR:{reset} {msg}\n'.format(
+        msg=msg,
+        reset=color(colorama.Style.RESET_ALL),
+        red=color(colorama.Fore.RED),
+        bold=color(colorama.Style.BRIGHT)))
+
 @contextmanager
 def debug_time(msg):
     started = datetime.now()
