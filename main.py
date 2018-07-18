@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """A bot to monitor YTS.ag for new movies"""
 import sys
+from alfred.repo import Repository
 from alfred.util import logger
-
 
 def main():
     """Main command dispatcher."""
@@ -11,6 +11,7 @@ def main():
             sys.version_info.major, sys.version_info.minor, sys.version_info.micro))
         exit(1)
     logger.debug("Starting app..")
+    repo = Repository()
 
 if __name__ == '__main__':
     main()
