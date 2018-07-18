@@ -17,8 +17,14 @@ class SerializationError(AlfredError):
 class WriteError(AlfredError):
     """Error writing the data."""
 
+
 class Repository():
     """ALfred repository"""
+    def __init__(self, url):
+        """Repository Constructor"""
+        self.url = url
+
+
     def load_json(self, filename: str, default: Union[List, Dict, None] = None) \
             -> Union[List, Dict]:
         """Load JSON data from a file and return as dict or list.
@@ -55,3 +61,7 @@ class Repository():
             _LOGGER.exception('Saving JSON file failed: %s',
                               filename)
             raise WriteError(error)
+
+
+    def get_url(self):
+        return self.url
