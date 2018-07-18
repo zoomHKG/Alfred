@@ -38,14 +38,14 @@ def failed(msg):
         reset=color(colorama.Style.RESET_ALL)))
 
 def debug(msg):
-    sys.stderr.write(u'{blue}{bold}DEBUG:{reset} {msg}\n'.format(
+    sys.stderr.write(u'{blue}{bold}[DEBUG]:{reset} {msg}\n'.format(
         msg=msg,
         reset=color(colorama.Style.RESET_ALL),
         blue=color(colorama.Fore.BLUE),
         bold=color(colorama.Style.BRIGHT)))
 
 def error(msg):
-    sys.stderr.write(u'{red}{bold}ERROR:{reset} {msg}\n'.format(
+    sys.stderr.write(u'{red}{bold}[ERROR]:{reset} {msg}\n'.format(
         msg=msg,
         reset=color(colorama.Style.RESET_ALL),
         red=color(colorama.Fore.RED),
