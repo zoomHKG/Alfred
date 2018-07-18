@@ -10,6 +10,7 @@ def main():
         logger.error('ERROR: Python 3.4+ is required, found Python {}.{}.{}'.format(
             sys.version_info.major, sys.version_info.minor, sys.version_info.micro))
         exit(1)
+    logger.debug("Starting app..")
 
 if __name__ == '__main__':
     main()
