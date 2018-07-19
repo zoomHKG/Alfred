@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """A bot to monitor YTS.ag for new movies"""
+import os
 import sys
 import signal
 import configparser
@@ -30,9 +31,10 @@ def signal_handler(signum, frame): # pylint: disable=W0613
 
 def start_server():
     """Start tornado web server"""
-    logger.debug('Starting web server at port {}'.format(8888))
+    port = os.environ.get("PORT", 5000)
+    logger.debug('Starting web server at port {}'.format(port))
     app = make_app()
-    app.listen(8888)
+    app.listen(port)
     IOLoop.instance().start()
 
 @gen.coroutine
