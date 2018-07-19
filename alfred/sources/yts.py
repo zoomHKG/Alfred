@@ -10,16 +10,6 @@ class YTS():
 
     def __init__(self):
         self.crawlUrl = 'https://yts.am/'
-        # self.crawl_web()
-        # self._soup_web = None
-
-    """crawl_web init garera first mai _soup_web ma html content rakhna khojeko milena :'( check this"""
-    # def crawl_web(self):
-    #     source_code = requests.get(self.crawlUrl)
-    #     plain_text = source_code.text
-    #     soup = BeautifulSoup(plain_text, "html.parser")
-    #     self._soup_web = soup
-    #     print(self._soup_web)
 
     def get_latest(self):
         latest_movies = []
