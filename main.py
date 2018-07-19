@@ -10,7 +10,7 @@ from tornado.ioloop import IOLoop
 from alfred.server import make_app
 from alfred.repo import Repository
 from alfred.util import logger
-
+from alfred.notify import Email
 
 def get_config():
     """get app config from config.ini"""
