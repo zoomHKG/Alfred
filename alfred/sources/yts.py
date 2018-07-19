@@ -1,17 +1,48 @@
 #!/usr/bin/env python3
+import requests
+from bs4 import BeautifulSoup
+
 """yts.ag scrapping stuffs here"""
+
 
 class YTS():
     """Class for YTS scrapping"""
 
+    def __init__(self):
+        self.crawlUrl = 'https://yts.am/'
+        # self.crawl_web()
+        # self._soup_web = None
+
+    """crawl_web init garera first mai _soup_web ma html content rakhna khojeko milena :'( check this"""
+    # def crawl_web(self):
+    #     source_code = requests.get(self.crawlUrl)
+    #     plain_text = source_code.text
+    #     soup = BeautifulSoup(plain_text, "html.parser")
+    #     self._soup_web = soup
+    #     print(self._soup_web)
 
     def get_latest(self):
-        """fetch latest uploads from yts"""
-        # TODO: implement scrapping
-        return []
-
+        latest_movies = []
+        source_code = requests.get(self.crawlUrl)
+        plain_text = source_code.text
+        soup = BeautifulSoup(plain_text, "html.parser")
+        latest_parent = soup.find('div', {'class': 'home-movies'})
+        latest_child_div = latest_parent.findAll('div', {'class': 'browse-movie-wrap'})
+        for l in latest_child_div:
+            movie_name_div = l.find('div', {'class': 'browse-movie-bottom'})
+            movie_name = movie_name_div.find('a', {'class': 'browse-movie-title'}).text
+            latest_movies.append(movie_name)
+        return latest_movies
 
     def get_featured(self):
-        """fetch featured movies from yts"""
-        # TODO: implement scrapping
-        return []
+        featured_movies = []
+        source_code = requests.get(self.crawlUrl)
+        plain_text = source_code.text
+        soup = BeautifulSoup(plain_text, "html.parser")
+        featured_parent = soup.find('div', {'id': 'popular-downloads'})
+        featured_child_div = featured_parent.findAll('div', {'class': 'browse-movie-wrap'})
+        for f in featured_child_div:
+            movie_name_div = f.find('div', {'class': 'browse-movie-bottom'})
+            movie_name = movie_name_div.find('a', {'class': 'browse-movie-title'}).text
+            featured_movies.append(movie_name)
+        return featured_movies
