@@ -12,7 +12,7 @@ def get_config():
     """get app config from config.ini"""
     config = configparser.ConfigParser()
     config.read('config.ini')
-    if not config['REPOSITORY']:
+    if not (config['REPOSITORY'] and config['REPOSITORY']['URL']):
         logger.error('Config File Error')
         exit(1)
     return config['REPOSITORY']['URL']
