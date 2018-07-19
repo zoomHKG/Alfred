@@ -10,7 +10,8 @@ class YTS():
 
     def __init__(self):
         """Constructor"""
-        self.url = os.environ.get("YTS", 'https://yts.am/')
+        # self.url = os.environ.get("YTS", 'https://yts.am/')
+        self.url = os.environ.get("YTS", 'http://192.168.2.1:8080/')
 
 
     def get_page(self):

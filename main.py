@@ -11,6 +11,7 @@ from alfred.server import make_app
 from alfred.repo import Repository
 from alfred.util import logger
 from alfred.notify import Email
+from alfred.sources.yts import YTS
 
 def get_config():
     """get app config from config.ini"""
@@ -38,7 +39,7 @@ def start_server():
     IOLoop.instance().start()
 
 @gen.coroutine
-def start_scheduler(interval, repo):
+def start_scheduler(interval, repo, yts):
     """Alfred's life's mission"""
     loop = IOLoop.instance()
     while True:
@@ -48,6 +49,8 @@ def start_scheduler(interval, repo):
         # TODO: fetch movie lists and notify here
         try:
             logger.debug(repo.get_movies())
+            logger.debug(yts.get_latest())
+            logger.debug(yts.get_featured())
         except Exception: # pylint: disable=W0703
             logger.error('Failed to fetch movie list from repo')
 
@@ -67,9 +70,10 @@ def main():
 
     # init repository
     repo = Repository(repo_url)
+    yts = YTS()
 
     # scheduler
-    start_scheduler(interval, repo)
+    start_scheduler(interval, repo, yts)
 
     # web server
     # just a ping endpoint to wake up app from heroku's anesthesia
