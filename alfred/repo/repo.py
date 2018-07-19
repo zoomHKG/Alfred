@@ -1,10 +1,11 @@
   #!/usr/bin/env python3
 """Alfred Repository Class"""
 import logging
-from typing import Union, List, Dict
-
 import json
+from typing import Union, List, Dict
+from requests import get, exceptions
 
+from alfred.util import logger
 from alfred.exceptions import AlfredError
 
 _LOGGER = logging.getLogger(__name__)
@@ -63,5 +64,29 @@ class Repository():
             raise WriteError(error)
 
 
+    # def json_to_dict(self, data):
+    #     """Convert json to python dictionary"""
+    #     try:
+    #         return json.loads(data)
+    #     except ValueError as error:
+    #         logger.exception('Could not parse JSON content: %s', error)
+    #         raise AlfredError(error)
+
     def get_url(self):
         return self.url
+
+
+    def get_movies(self):
+        """Get movies/emails from repo"""
+        try:
+            res = get(self.url)
+            data = res.json()
+            return data
+        except ValueError as err:
+            logger.error('Could not parse JSON content.')
+            raise AlfredError(err)
+        except exceptions.ConnectionError as err:
+            logger.error('Request Connection Error')
+            raise AlfredError(err)
+        except Exception as err: # pylint: disable=W0703
+            raise AlfredError(err)

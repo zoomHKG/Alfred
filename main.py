@@ -25,6 +25,7 @@ def signal_handler(signum, frame): # pylint: disable=W0613
     """Signal handler"""
     logger.debug('SIG: {}, Exiting...'.format(signum))
     IOLoop.instance().stop()
+    sys.exit(0)
 
 
 def start_server():
@@ -35,7 +36,7 @@ def start_server():
     IOLoop.instance().start()
 
 @gen.coroutine
-def start_scheduler(interval):
+def start_scheduler(interval, repo):
     """Alfred's life's mission"""
     loop = IOLoop.instance()
     while True:
@@ -43,6 +44,10 @@ def start_scheduler(interval):
         yield gen.Task(loop.add_timeout, timedelta(seconds=interval))
         logger.debug('Alfred at work..')
         # TODO: fetch movie lists and notify here
+        try:
+            logger.debug(repo.get_movies())
+        except Exception: # pylint: disable=W0703
+            logger.error('Failed to fetch movie list from repo')
 
 
 def main():
@@ -58,12 +63,11 @@ def main():
     # setup signal handler
     signal.signal(signal.SIGINT, signal_handler)
 
-    # repository stuffs
+    # init repository
     repo = Repository(repo_url)
-    logger.debug(repo.get_url())
 
     # scheduler
-    start_scheduler(interval)
+    start_scheduler(interval, repo)
 
     # web server
     start_server()
