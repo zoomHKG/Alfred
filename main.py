@@ -2,6 +2,8 @@
 """A bot to monitor YTS.ag for new movies"""
 import sys
 import configparser
+from datetime import timedelta
+from tornado import gen
 from tornado.ioloop import IOLoop
 from alfred.server import make_app
 from alfred.repo import Repository
@@ -12,10 +14,29 @@ def get_config():
     """get app config from config.ini"""
     config = configparser.ConfigParser()
     config.read('config.ini')
-    if not (config['REPOSITORY'] and config['REPOSITORY']['URL']):
+    if not (config['REPOSITORY'] and config['SCHEDULER']):
         logger.error('Config File Error')
         exit(1)
-    return config['REPOSITORY']['URL']
+    return config['REPOSITORY']['URL'], int(config['SCHEDULER']['INTERVAL'])
+
+
+def start_server():
+    """Start tornado web server"""
+    logger.debug('Starting web server at port {}'.format(8888))
+    app = make_app()
+    app.listen(8888)
+    IOLoop.instance().start()
+
+@gen.coroutine
+def start_scheduler(interval):
+    """Alfred's life's mission"""
+    loop = IOLoop.instance()
+    while True:
+        logger.debug('Alfred going to bed.')
+        yield gen.Task(loop.add_timeout, timedelta(seconds=interval))
+        logger.debug('Alfred at work..')
+        # TODO: fetch movie lists and notify here
+
 
 def main():
     """Main command dispatcher."""
@@ -24,17 +45,18 @@ def main():
             sys.version_info.major, sys.version_info.minor, sys.version_info.micro))
         exit(1)
 
-    # repository stuffs
     logger.debug('Initializing Repository')
-    repo_url = get_config()
+    repo_url, interval = get_config()
+
+    # repository stuffs
     repo = Repository(repo_url)
     logger.debug(repo.get_url())
 
+    # scheduler
+    start_scheduler(interval)
+
     # web server
-    logger.debug('Starting web server at port {}'.format(8888))
-    app = make_app()
-    app.listen(8888)
-    IOLoop.current().start()
+    start_server()
 
 if __name__ == '__main__':
     main()
