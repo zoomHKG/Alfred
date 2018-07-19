@@ -12,9 +12,10 @@ class Email():
         self.server.login(self.email, self.passwd)
 
 
-    def send_mail(self, email, title, body):
+    def send_mail(self, emails, title, body):
         """Send email"""
-        self.server.sendmail(email, title, body)
+        for email in emails:
+            self.server.sendmail(email, title, body)
 
 
     def __exit__(self, exc_type, exc_value, traceback):
