@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """A bot to monitor YTS.ag for new movies"""
 import sys
+import signal
 import configparser
 from datetime import timedelta
 from tornado import gen
@@ -18,6 +19,12 @@ def get_config():
         logger.error('Config File Error')
         exit(1)
     return config['REPOSITORY']['URL'], int(config['SCHEDULER']['INTERVAL'])
+
+
+def signal_handler(signum, frame): # pylint: disable=W0613
+    """Signal handler"""
+    logger.debug('SIG: {}, Exiting...'.format(signum))
+    IOLoop.instance().stop()
 
 
 def start_server():
@@ -47,6 +54,9 @@ def main():
 
     logger.debug('Initializing Repository')
     repo_url, interval = get_config()
+
+    # setup signal handler
+    signal.signal(signal.SIGINT, signal_handler)
 
     # repository stuffs
     repo = Repository(repo_url)
