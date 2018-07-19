@@ -70,6 +70,7 @@ def main():
     start_scheduler(interval, repo)
 
     # web server
+    # just a ping endpoint to wake up app from heroku's anesthesia
     start_server()
 
 if __name__ == '__main__':
