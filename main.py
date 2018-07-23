@@ -48,9 +48,13 @@ def start_scheduler(interval, repo, yts):
         logger.debug('Alfred at work..')
         # TODO: fetch movie lists and notify here
         try:
-            logger.debug(repo.get_movies())
-            logger.debug(yts.get_latest())
-            logger.debug(yts.get_featured())
+            wish_list = repo.get_movies()
+            available = yts.get_movies()
+            logger.debug(available)
+            for movie in wish_list:
+                if movie in available:
+                    logger.debug('{} Movie available. Sending email.')
+                    # TODO: send email
         except Exception: # pylint: disable=W0703
             logger.error('Failed to fetch movie list from repo')
 

@@ -11,8 +11,8 @@ class YTS():
     def __init__(self):
         """Constructor"""
         # self.url = os.environ.get("YTS", 'https://yts.am/')
-        self.url = os.environ.get("YTS", 'http://192.168.2.1:8080/')
-
+        self.url = os.environ.get("YTS", 'http://127.0.0.1:8080/')
+        self.previous = []
 
     def get_page(self):
         """fetch and parse yts homepage"""
@@ -45,3 +45,13 @@ class YTS():
             movie_name = movie_name_div.find('a', {'class': 'browse-movie-title'}).text
             featured_movies.append(movie_name)
         return featured_movies
+
+
+    def get_movies(self):
+        """Generic function to get new movies"""
+        latest = self.get_latest()
+        featured = self.get_featured()
+        final = list(set(latest) | set(featured))
+        diff = list(set(final) - set(self.previous))
+        self.previous = final
+        return diff
