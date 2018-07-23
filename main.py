@@ -55,7 +55,6 @@ def start_scheduler(interval, repo, yts, email):
         logger.debug('Alfred going to bed.')
         yield gen.Task(loop.add_timeout, timedelta(seconds=interval))
         logger.debug('Alfred at work..')
-        # TODO: fetch movie lists and notify here
         try:
             wish_list = repo.get_movies()
             available = yts.get_movies()
