@@ -2,6 +2,7 @@
 """Alfred Repository Class"""
 import logging
 import json
+import os.path
 from typing import Union, List, Dict
 from requests import get, exceptions
 
@@ -21,9 +22,33 @@ class WriteError(AlfredError):
 
 class Repository():
     """ALfred repository"""
+    notified = []
     def __init__(self, url):
         """Repository Constructor"""
         self.url = url
+        self.notified = self.load_notified()
+
+
+    def load_notified(self):
+        """Load already notified movies from file"""
+        notified = []
+        if os.path.isfile('.notified'):
+            with open('.notified', 'r') as file:
+                notified = file.read().splitlines()
+            logger.debug('.notified loaded.')
+            logger.debug(notified)
+        else:
+            logger.debug('No .notified file found, creating one.')
+            open('.notified', 'x')
+        return notified
+
+
+    def save_notified(self, movie):
+        """append notified movie to file"""
+        with open('.notified', 'a') as file:
+            file.write('{}\n'.format(movie))
+            file.close()
+            self.notified.append(movie)
 
 
     def load_json(self, filename: str, default: Union[List, Dict, None] = None) \
@@ -81,7 +106,8 @@ class Repository():
         try:
             res = get(self.url)
             data = res.json()
-            return data
+            filtered_data = dict((k, v) for k, v in data.items() if k not in self.notified)
+            return filtered_data
         except ValueError as err:
             logger.error('Could not parse JSON content.')
             raise AlfredError(err)

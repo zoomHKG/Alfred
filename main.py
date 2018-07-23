@@ -58,12 +58,14 @@ def start_scheduler(interval, repo, yts, email):
         try:
             wish_list = repo.get_movies()
             available = yts.get_movies()
+            logger.debug(wish_list)
             logger.debug(available)
             for movie in wish_list:
                 if movie in available:
                     logger.debug('{} Movie available. Sending email.')
                     email.send_mail(wish_list[movie], 'Movie Available',
                                     'The movie {} is now available on YTS.'.format(movie))
+                    repo.save_notified(movie)
         except Exception: # pylint: disable=W0703
             logger.error('Failed to fetch movie list from repo')
 
@@ -88,7 +90,8 @@ def main():
 
     # init emial
     email = Email(email, passwd)
-    email.send_mail(['abhishekmaharjan1993@gmail.com'], 'Awake', "I'm awake!!")
+    email.send_mail(['abhishekmaharjan1993@gmail.com'],
+                    'Awake', "I'm awake!! {}".format(repo.notified))
 
     # scheduler
     start_scheduler(interval, repo, yts, email)
