@@ -22,6 +22,15 @@ def get_config():
         exit(1)
     return config['REPOSITORY']['URL'], int(config['SCHEDULER']['INTERVAL'])
 
+def get_credentials():
+    """get email credentials from ENV"""
+    email = os.environ.get("EMAIL")
+    passwd = os.environ.get("PASSWD")
+    if not (email and passwd):
+        logger.error('EMAIL and PASSWD Environment Variable not set.')
+        exit(1)
+    return email, passwd
+
 
 def signal_handler(signum, frame): # pylint: disable=W0613
     """Signal handler"""
@@ -39,7 +48,7 @@ def start_server():
     IOLoop.instance().start()
 
 @gen.coroutine
-def start_scheduler(interval, repo, yts):
+def start_scheduler(interval, repo, yts, email):
     """Alfred's life's mission"""
     loop = IOLoop.instance()
     while True:
@@ -54,7 +63,8 @@ def start_scheduler(interval, repo, yts):
             for movie in wish_list:
                 if movie in available:
                     logger.debug('{} Movie available. Sending email.')
-                    # TODO: send email
+                    email.send_mail(wish_list[movie], 'Movie Available',
+                                    'The movie {} is now available on YTS.'.format(movie))
         except Exception: # pylint: disable=W0703
             logger.error('Failed to fetch movie list from repo')
 
@@ -68,6 +78,7 @@ def main():
 
     logger.debug('Initializing Repository')
     repo_url, interval = get_config()
+    email, passwd = get_credentials()
 
     # setup signal handler
     signal.signal(signal.SIGINT, signal_handler)
@@ -76,8 +87,12 @@ def main():
     repo = Repository(repo_url)
     yts = YTS()
 
+    # init emial
+    email = Email(email, passwd)
+    email.send_mail(['abhishekmaharjan1993@gmail.com'], 'Awake', "I'm awake!!")
+
     # scheduler
-    start_scheduler(interval, repo, yts)
+    start_scheduler(interval, repo, yts, email)
 
     # web server
     # just a ping endpoint to wake up app from heroku's anesthesia
