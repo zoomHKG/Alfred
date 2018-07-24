@@ -58,11 +58,12 @@ def start_scheduler(interval, repo, yts, email):
         try:
             wish_list = repo.get_movies()
             available = yts.get_movies()
-            logger.debug(wish_list)
+            # logger.debug(wish_list)
             logger.debug(available)
             for movie in wish_list:
+                # logger.debug('{} : {}'.format(movie, movie in available))
                 if movie in available:
-                    logger.debug('{} Movie available. Sending email.')
+                    logger.debug('{} Movie available. Sending email.'.format(movie))
                     email.send_mail(wish_list[movie], 'Movie Available',
                                     'The movie {} is now available on YTS.'.format(movie))
                     repo.save_notified(movie)
