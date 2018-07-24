@@ -52,6 +52,6 @@ class YTS():
         latest = self.get_latest()
         featured = self.get_featured()
         final = list(set(latest) | set(featured))
-        diff = list(set(final) - set(self.previous))
-        self.previous = final
-        return diff
+        # diff = list(set(final) - set(self.previous))
+        # self.previous = final
+        return final
