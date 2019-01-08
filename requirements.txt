@@ -1,4 +1,4 @@
-beautifulsoup4==4.6.0
+beautifulsoup4==4.7.1
 colorama==0.4.1
 configparser==3.5.0
 PyYAML==3.13
